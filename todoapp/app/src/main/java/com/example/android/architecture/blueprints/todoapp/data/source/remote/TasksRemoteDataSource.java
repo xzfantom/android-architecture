@@ -19,9 +19,12 @@ package com.example.android.architecture.blueprints.todoapp.data.source.remote;
 import android.content.SharedPreferences;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.example.android.architecture.blueprints.todoapp.data.Task;
 import com.example.android.architecture.blueprints.todoapp.data.source.TasksDataSource;
+import com.example.android.architecture.blueprints.todoapp.Constants;
+import com.github.kevinsawicki.http.HttpRequest;
 import com.google.common.collect.Lists;
 
 import java.io.IOException;
@@ -39,11 +42,11 @@ public class TasksRemoteDataSource implements TasksDataSource {
 
     private static TasksRemoteDataSource INSTANCE;
     private static String remoteToken;
+    private static String remoteServer;
 
     private SharedPreferences sPref;
 
     private static final int SERVICE_LATENCY_IN_MILLIS = 5000;
-    private static final String PREF_TOKEN = "TokenJWT";
 
     private final static Map<String, Task> TASKS_SERVICE_DATA;
 
@@ -64,14 +67,21 @@ public class TasksRemoteDataSource implements TasksDataSource {
 
     // Prevent direct instantiation.
     private TasksRemoteDataSource() {
-        remoteToken = sPref.getString(PREF_TOKEN, "");
-        URL url = new URL("http://");
-        HttpURLConnection urlConnection = null;
-        try {
-            urlConnection = (HttpURLConnection) url.openConnection();
-            urlConnection.setRequestProperty("Authorization", "Bearer " + remoteToken);
-        } catch (IOException e) {
-            e.printStackTrace();
+        remoteToken = sPref.getString(Constants.PREF_TOKEN, "");
+        remoteServer = sPref.getString(Constants.PREF_SERVERNAME, "");
+        if (remoteToken.isEmpty()) {
+            try {
+                String remoteUser = sPref.getString(Constants.PREF_USERNAME, "");
+                String remotePassword = sPref.getString(Constants.PREF_PASSWORD, "");
+                StringBuilder url = new StringBuilder(remoteServer);
+                url.append(Constants.API_TOKEN_REQUEST);
+
+                HttpRequest request = HttpRequest.post(url).basic(remoteUser, remotePassword).send("[\"todo.all\"]");
+                Log.d(Constants.LOG_TAG, "TasksRemoteDataSource: " + request.body());
+
+            } catch (HttpRequest.HttpRequestException e) {
+                e.printStackTrace();
+            }
         }
 
 

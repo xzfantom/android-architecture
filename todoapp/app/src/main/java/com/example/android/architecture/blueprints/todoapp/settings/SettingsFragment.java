@@ -31,6 +31,7 @@ import android.widget.TextView;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 
+import com.example.android.architecture.blueprints.todoapp.Constants;
 import com.example.android.architecture.blueprints.todoapp.R;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -49,10 +50,6 @@ public class SettingsFragment extends Fragment implements SettingsContract.View 
     private SharedPreferences sPref;
 
     private SettingsContract.Presenter mPresenter;
-
-    final String PREF_SERVERNAME = "ServerName";
-    final String PREF_USERNAME = "UserName";
-    final String PREF_PASSWORD = "Password";
 
     public static SettingsFragment newInstance() {
         return new SettingsFragment();
@@ -78,9 +75,9 @@ public class SettingsFragment extends Fragment implements SettingsContract.View 
             @Override
             public void onClick(View view) {
                 Editor ed = sPref.edit();
-                ed.putString(PREF_SERVERNAME, mServerName.getText().toString());
-                ed.putString(PREF_USERNAME, mUserName.getText().toString());
-                ed.putString(PREF_PASSWORD, mPassword.getText().toString());
+                ed.putString(Constants.PREF_SERVERNAME, mServerName.getText().toString());
+                ed.putString(Constants.PREF_USERNAME, mUserName.getText().toString());
+                ed.putString(Constants.PREF_PASSWORD, mPassword.getText().toString());
                 ed.apply();
                 NavUtils.navigateUpFromSameTask(getActivity());
             }
@@ -95,9 +92,9 @@ public class SettingsFragment extends Fragment implements SettingsContract.View 
         });
 
         sPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-        mServerName.setText(sPref.getString(PREF_SERVERNAME, ""));
-        mUserName.setText(sPref.getString(PREF_USERNAME, ""));
-        mPassword.setText(sPref.getString(PREF_PASSWORD, ""));
+        mServerName.setText(sPref.getString(Constants.PREF_SERVERNAME, ""));
+        mUserName.setText(sPref.getString(Constants.PREF_USERNAME, ""));
+        mPassword.setText(sPref.getString(Constants.PREF_PASSWORD, ""));
 
         return root;
     }
