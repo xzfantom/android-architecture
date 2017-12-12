@@ -16,6 +16,7 @@
 
 package com.example.android.architecture.blueprints.todoapp.data.source.remote;
 
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 
@@ -23,6 +24,10 @@ import com.example.android.architecture.blueprints.todoapp.data.Task;
 import com.example.android.architecture.blueprints.todoapp.data.source.TasksDataSource;
 import com.google.common.collect.Lists;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -33,8 +38,12 @@ import java.util.Map;
 public class TasksRemoteDataSource implements TasksDataSource {
 
     private static TasksRemoteDataSource INSTANCE;
+    private static String remoteToken;
+
+    private SharedPreferences sPref;
 
     private static final int SERVICE_LATENCY_IN_MILLIS = 5000;
+    private static final String PREF_TOKEN = "TokenJWT";
 
     private final static Map<String, Task> TASKS_SERVICE_DATA;
 
@@ -44,6 +53,8 @@ public class TasksRemoteDataSource implements TasksDataSource {
         addTask("Finish bridge in Tacoma", "Found awesome girders at half the cost!");
     }
 
+
+
     public static TasksRemoteDataSource getInstance() {
         if (INSTANCE == null) {
             INSTANCE = new TasksRemoteDataSource();
@@ -52,7 +63,19 @@ public class TasksRemoteDataSource implements TasksDataSource {
     }
 
     // Prevent direct instantiation.
-    private TasksRemoteDataSource() {}
+    private TasksRemoteDataSource() {
+        remoteToken = sPref.getString(PREF_TOKEN, "");
+        URL url = new URL("http://");
+        HttpURLConnection urlConnection = null;
+        try {
+            urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.setRequestProperty("Authorization", "Bearer " + remoteToken);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+    }
 
     private static void addTask(String title, String description) {
         Task newTask = new Task(title, description);

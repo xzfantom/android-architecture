@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Список задач</string>
+    <string name="title_hint">Заголовок</string>
+    <string name="add_task">Новая задача</string>
+    <string name="edit_task">Редактировать задачу</string>
+    <string name="task_marked_complete">Отметить выполненым</string>
+    <string name="settings_title">Настройки</string>
+    <string name="hint_server_name">Сервер</string>
+    <string name="hint_user_name">Пользователь</string>
+    <string name="hint_password">Пароль</string>
+    <string name="statistics_title">Статистика</string>
+    <string name="no_tasks_add">Добавить задачу</string>
+    <string name="refresh">Обновить</string>
+</resources>

@@ -15,7 +15,7 @@
   -->
 
 <resources>
-    <string name="app_name">TO-DO-MVP</string>
+    <string name="app_name">TODO List</string>
     <string name="add_task">New TO-DO</string>
     <string name="edit_task">Edit TO-DO</string>
     <string name="task_marked_complete">Task marked complete</string>
@@ -31,7 +31,6 @@
     <string name="empty_task_message">TO DOs cannot be empty</string>
     <string name="successfully_saved_task_message">TO-DO saved</string>
     <string name="list_title">TO-DO List</string>
-    <string name="statistics_title">Statistics</string>
     <string name="statistics_no_tasks">You have no tasks.</string>
     <string name="statistics_active_tasks">Active tasks:</string>
     <string name="statistics_completed_tasks">Completed tasks:</string>
@@ -55,5 +54,10 @@
     <string name="no_tasks_completed">You have no completed TO-DOs!</string>
     <string name="no_tasks_add">Add a TO-DO item +</string>
     <string name="refresh">Refresh</string>
+    <string name="statistics_title">Statistics</string>
+    <string name="settings_title">Settings</string>
+    <string name="hint_server_name">Server name</string>
+    <string name="hint_user_name">User name</string>
+    <string name="hint_password">Password</string>
 
 </resources>
