@@ -59,5 +59,6 @@
     <string name="hint_server_name">Server name</string>
     <string name="hint_user_name">User name</string>
     <string name="hint_password">Password</string>
+    <string name="preferenceFileKey">com.example.android.architecture.blueprints.todoapp.PREFERENCE_FILE_KEY</string>
 
 </resources>

@@ -91,7 +91,7 @@ public class SettingsFragment extends Fragment implements SettingsContract.View 
             }
         });
 
-        sPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        sPref = getActivity().getSharedPreferences(getString(R.string.preferenceFileKey), Context.MODE_PRIVATE);
         mServerName.setText(sPref.getString(Constants.PREF_SERVERNAME, ""));
         mUserName.setText(sPref.getString(Constants.PREF_USERNAME, ""));
         mPassword.setText(sPref.getString(Constants.PREF_PASSWORD, ""));

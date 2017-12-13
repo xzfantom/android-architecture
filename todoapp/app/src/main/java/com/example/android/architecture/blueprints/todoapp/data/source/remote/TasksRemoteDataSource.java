@@ -16,11 +16,13 @@
 
 package com.example.android.architecture.blueprints.todoapp.data.source.remote;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.example.android.architecture.blueprints.todoapp.R;
 import com.example.android.architecture.blueprints.todoapp.data.Task;
 import com.example.android.architecture.blueprints.todoapp.data.source.TasksDataSource;
 import com.example.android.architecture.blueprints.todoapp.Constants;
@@ -58,15 +60,17 @@ public class TasksRemoteDataSource implements TasksDataSource {
 
 
 
-    public static TasksRemoteDataSource getInstance() {
+    public static TasksRemoteDataSource getInstance(Context context) {
         if (INSTANCE == null) {
-            INSTANCE = new TasksRemoteDataSource();
+            INSTANCE = new TasksRemoteDataSource(context);
         }
         return INSTANCE;
     }
 
     // Prevent direct instantiation.
-    private TasksRemoteDataSource() {
+    private TasksRemoteDataSource(Context context) {
+        sPref = context.getSharedPreferences(context.getString(R.string.preferenceFileKey), context.MODE_PRIVATE);
+
         remoteToken = sPref.getString(Constants.PREF_TOKEN, "");
         remoteServer = sPref.getString(Constants.PREF_SERVERNAME, "");
         if (remoteToken.isEmpty()) {
@@ -76,15 +80,17 @@ public class TasksRemoteDataSource implements TasksDataSource {
                 StringBuilder url = new StringBuilder(remoteServer);
                 url.append(Constants.API_TOKEN_REQUEST);
 
-                HttpRequest request = HttpRequest.post(url).basic(remoteUser, remotePassword).send("[\"todo.all\"]");
-                Log.d(Constants.LOG_TAG, "TasksRemoteDataSource: " + request.body());
+               HttpRequest request = HttpRequest.post(url);
+               request.basic(remoteUser, remotePassword);
+               request.send("[\"todo.all\"]");
+               //Log.d(Constants.LOG_TAG, "TasksRemoteDataSource: " + request.body());
 
             } catch (HttpRequest.HttpRequestException e) {
                 e.printStackTrace();
+            } catch (Exception e) {
+
             }
         }
-
-
     }
 
     private static void addTask(String title, String description) {

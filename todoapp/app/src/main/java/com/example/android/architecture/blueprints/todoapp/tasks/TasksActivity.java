@@ -30,9 +30,14 @@ import android.view.MenuItem;
 
 import com.example.android.architecture.blueprints.todoapp.Injection;
 import com.example.android.architecture.blueprints.todoapp.R;
+import com.example.android.architecture.blueprints.todoapp.data.source.TasksRepository;
+import com.example.android.architecture.blueprints.todoapp.data.source.local.TasksLocalDataSource;
+import com.example.android.architecture.blueprints.todoapp.data.source.local.ToDoDatabase;
+import com.example.android.architecture.blueprints.todoapp.data.source.remote.TasksRemoteDataSource;
 import com.example.android.architecture.blueprints.todoapp.settings.SettingsActivity;
 import com.example.android.architecture.blueprints.todoapp.statistics.StatisticsActivity;
 import com.example.android.architecture.blueprints.todoapp.util.ActivityUtils;
+import com.example.android.architecture.blueprints.todoapp.util.AppExecutors;
 import com.example.android.architecture.blueprints.todoapp.util.EspressoIdlingResource;
 
 public class TasksActivity extends AppCompatActivity {
@@ -72,9 +77,13 @@ public class TasksActivity extends AppCompatActivity {
                     getSupportFragmentManager(), tasksFragment, R.id.contentFrame);
         }
 
+        ToDoDatabase database = ToDoDatabase.getInstance(getApplicationContext());
         // Create the presenter
         mTasksPresenter = new TasksPresenter(
-                Injection.provideTasksRepository(getApplicationContext()), tasksFragment);
+        //        Injection.provideTasksRepository(getApplicationContext()), tasksFragment);
+                TasksRepository.getInstance(TasksRemoteDataSource.getInstance(getApplicationContext()),
+                        TasksLocalDataSource.getInstance(new AppExecutors(),
+                            database.taskDao())), tasksFragment);
 
         // Load previously saved state, if available.
         if (savedInstanceState != null) {
