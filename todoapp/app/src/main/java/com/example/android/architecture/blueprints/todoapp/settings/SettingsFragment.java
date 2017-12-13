@@ -31,7 +31,6 @@ import android.widget.TextView;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 
-import com.example.android.architecture.blueprints.todoapp.Constants;
 import com.example.android.architecture.blueprints.todoapp.R;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -75,9 +74,9 @@ public class SettingsFragment extends Fragment implements SettingsContract.View 
             @Override
             public void onClick(View view) {
                 Editor ed = sPref.edit();
-                ed.putString(Constants.PREF_SERVERNAME, mServerName.getText().toString());
-                ed.putString(Constants.PREF_USERNAME, mUserName.getText().toString());
-                ed.putString(Constants.PREF_PASSWORD, mPassword.getText().toString());
+                ed.putString(getString(R.string.preferenceServerName), mServerName.getText().toString());
+                ed.putString(getString(R.string.preferenceUserName), mUserName.getText().toString());
+                ed.putString(getString(R.string.preferencePassword), mPassword.getText().toString());
                 ed.apply();
                 NavUtils.navigateUpFromSameTask(getActivity());
             }
@@ -92,9 +91,10 @@ public class SettingsFragment extends Fragment implements SettingsContract.View 
         });
 
         sPref = getActivity().getSharedPreferences(getString(R.string.preferenceFileKey), Context.MODE_PRIVATE);
-        mServerName.setText(sPref.getString(Constants.PREF_SERVERNAME, ""));
-        mUserName.setText(sPref.getString(Constants.PREF_USERNAME, ""));
-        mPassword.setText(sPref.getString(Constants.PREF_PASSWORD, ""));
+
+        mServerName.setText(sPref.getString(getString(R.string.preferenceServerName), ""));
+        mUserName.setText(sPref.getString(getString(R.string.preferenceUserName), ""));
+        mPassword.setText(sPref.getString(getString(R.string.preferencePassword), ""));
 
         return root;
     }

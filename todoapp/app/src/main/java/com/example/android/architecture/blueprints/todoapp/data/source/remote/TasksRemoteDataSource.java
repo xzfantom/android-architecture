@@ -18,6 +18,7 @@ package com.example.android.architecture.blueprints.todoapp.data.source.remote;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -25,14 +26,9 @@ import android.util.Log;
 import com.example.android.architecture.blueprints.todoapp.R;
 import com.example.android.architecture.blueprints.todoapp.data.Task;
 import com.example.android.architecture.blueprints.todoapp.data.source.TasksDataSource;
-import com.example.android.architecture.blueprints.todoapp.Constants;
 import com.github.kevinsawicki.http.HttpRequest;
 import com.google.common.collect.Lists;
 
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -43,10 +39,13 @@ import java.util.Map;
 public class TasksRemoteDataSource implements TasksDataSource {
 
     private static TasksRemoteDataSource INSTANCE;
-    private static String remoteToken;
-    private static String remoteServer;
 
     private SharedPreferences sPref;
+    private String remoteToken;
+    private String remoteServer;
+    private String remoteUser;
+    private String remotePassword;
+    private String remoteAPIGetToken;
 
     private static final int SERVICE_LATENCY_IN_MILLIS = 5000;
 
@@ -70,26 +69,52 @@ public class TasksRemoteDataSource implements TasksDataSource {
     // Prevent direct instantiation.
     private TasksRemoteDataSource(Context context) {
         sPref = context.getSharedPreferences(context.getString(R.string.preferenceFileKey), context.MODE_PRIVATE);
+        remoteServer = sPref.getString(context.getString(R.string.preferenceServerName), "");
+        remoteToken = sPref.getString(context.getString(R.string.preferenceToken), "");
 
-        remoteToken = sPref.getString(Constants.PREF_TOKEN, "");
-        remoteServer = sPref.getString(Constants.PREF_SERVERNAME, "");
         if (remoteToken.isEmpty()) {
+            remoteUser = sPref.getString(context.getString(R.string.preferenceUserName), "");
+            remotePassword = sPref.getString(context.getString(R.string.preferencePassword), "");
+            remoteAPIGetToken = context.getString(R.string.APITokenRequest);
+            new RequestToken().execute();
+        }
+
+    }
+
+    private class  RequestToken extends AsyncTask<Void, Long, String> {
+
+
+        @Override
+        protected String doInBackground(Void... data) {
+            String result = "";
+
             try {
-                String remoteUser = sPref.getString(Constants.PREF_USERNAME, "");
-                String remotePassword = sPref.getString(Constants.PREF_PASSWORD, "");
-                StringBuilder url = new StringBuilder(remoteServer);
-                url.append(Constants.API_TOKEN_REQUEST);
+                    StringBuilder url = new StringBuilder(remoteServer);
+                    url.append(remoteAPIGetToken);
 
-               HttpRequest request = HttpRequest.post(url);
-               request.basic(remoteUser, remotePassword);
-               request.send("[\"todo.all\"]");
-               //Log.d(Constants.LOG_TAG, "TasksRemoteDataSource: " + request.body());
+                    HttpRequest request = HttpRequest.post(url);
+                    request.basic(remoteUser, remotePassword);
+                    request.send("[\"todo.all\"]");
+                    result = request.body();
+                    Log.d("XZ", "TasksRemoteDataSource: " + result);
 
-            } catch (HttpRequest.HttpRequestException e) {
-                e.printStackTrace();
-            } catch (Exception e) {
+                } catch (HttpRequest.HttpRequestException e) {
+                    Log.e("XZ", "TasksRemoteDataSource: " + e.toString());
+                } catch (Exception e) {
+                    Log.e("XZ", "TasksRemoteDataSource: " + e.toString());
+                }
+            return result;
+        }
 
-            }
+        @Override
+        protected void onProgressUpdate(Long... values) {
+            super.onProgressUpdate(values);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            remoteToken = result;
         }
     }
 

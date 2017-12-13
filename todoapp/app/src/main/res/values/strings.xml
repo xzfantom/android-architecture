@@ -51,7 +51,7 @@
     <string name="label_completed">Completed TO-DOs</string>
     <string name="no_tasks_all">You have no TO-DOs!</string>
     <string name="no_tasks_active">You have no active TO-DOs!</string>
-    <string name="no_tasks_completed">You have no completed TO-DOs!</string>
+    <string name="no_tasks_completed" translatable="false">You have no completed TO-DOs!</string>
     <string name="no_tasks_add">Add a TO-DO item +</string>
     <string name="refresh">Refresh</string>
     <string name="statistics_title">Statistics</string>
@@ -60,5 +60,11 @@
     <string name="hint_user_name">User name</string>
     <string name="hint_password">Password</string>
     <string name="preferenceFileKey">com.example.android.architecture.blueprints.todoapp.PREFERENCE_FILE_KEY</string>
+    <string name="preferenceServerName" translatable="false">ServerName</string>
+    <string name="preferenceUserName" translatable="false">UserName</string>
+    <string name="preferencePassword" translatable="false">Password</string>
+    <string name="preferenceToken" translatable="false">JWT</string>
+    <string name="APITokenRequest" translatable="false">/token</string>
+    <string name="LogTag" translatable="false">TODOAPP</string>
 
 </resources>
