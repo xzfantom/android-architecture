@@ -46,6 +46,7 @@ public class TasksRemoteDataSource implements TasksDataSource {
     private String remoteUser;
     private String remotePassword;
     private String remoteAPIGetToken;
+    private String preferenceToken;
 
     private static final int SERVICE_LATENCY_IN_MILLIS = 5000;
 
@@ -71,32 +72,37 @@ public class TasksRemoteDataSource implements TasksDataSource {
         sPref = context.getSharedPreferences(context.getString(R.string.preferenceFileKey), context.MODE_PRIVATE);
         remoteServer = sPref.getString(context.getString(R.string.preferenceServerName), "");
         remoteToken = sPref.getString(context.getString(R.string.preferenceToken), "");
+        preferenceToken = context.getString(R.string.preferenceToken);
 
-        if (remoteToken.isEmpty()) {
+        if (remoteToken.isEmpty() && !remoteServer.isEmpty()) {
             remoteUser = sPref.getString(context.getString(R.string.preferenceUserName), "");
             remotePassword = sPref.getString(context.getString(R.string.preferencePassword), "");
             remoteAPIGetToken = context.getString(R.string.APITokenRequest);
-            new RequestToken().execute();
+            new RequestToken().execute(remoteServer, remoteUser, remotePassword, remoteAPIGetToken);
         }
 
     }
 
-    private class  RequestToken extends AsyncTask<Void, Long, String> {
+    private class  RequestToken extends AsyncTask<String, Long, String> {
 
 
         @Override
-        protected String doInBackground(Void... data) {
+        protected String doInBackground(String... data) {
+            String mRemoteServer = data[0];
+            String mRemoteUser = data[1];
+            String mRemotePass = data[2];
+            String mAPIGetToken = data[3];
             String result = "";
 
             try {
-                    StringBuilder url = new StringBuilder(remoteServer);
-                    url.append(remoteAPIGetToken);
+                    StringBuilder url = new StringBuilder(mRemoteServer);
+                    url.append(mAPIGetToken);
 
                     HttpRequest request = HttpRequest.post(url);
-                    request.basic(remoteUser, remotePassword);
+                    request.basic(mRemoteUser, mRemotePass);
                     request.send("[\"todo.all\"]");
                     result = request.body();
-                    Log.d("XZ", "TasksRemoteDataSource: " + result);
+                    Log.i("TODOAPP", "TasksRemoteDataSource: " + result);
 
                 } catch (HttpRequest.HttpRequestException e) {
                     Log.e("XZ", "TasksRemoteDataSource: " + e.toString());
@@ -107,14 +113,13 @@ public class TasksRemoteDataSource implements TasksDataSource {
         }
 
         @Override
-        protected void onProgressUpdate(Long... values) {
-            super.onProgressUpdate(values);
-        }
-
-        @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
             remoteToken = result;
+            SharedPreferences.Editor ed = sPref.edit();
+            ed.putString(preferenceToken, remoteToken);
+            ed.apply();
+            ed = null;
         }
     }
 
